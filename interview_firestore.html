@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المقابلة - نظام المقابلات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-darker: #2563eb;
+            --primary-light: #93c5fd;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(96, 165, 250, 0.2);
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-darker) 100%);
+            min-height: 100vh;
+            direction: rtl;
+            padding: 20px;
+            color: var(--text-primary);
+        }
+
+        .interview-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .interview-header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            text-align: center;
+        }
+
+        .interview-header h2 {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .job-title {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        .question-counter {
+            font-weight: 600;
+            color: var(--primary-light);
+        }
+
+        .progress-bar {
+            background: rgba(96, 165, 250, 0.1);
+            height: 10px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            height: 100%;
+            transition: width 0.5s ease;
+            box-shadow: 0 0 10px rgba(96, 165, 250, 0.5);
+        }
+
+        .question-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 40px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .answer-section {
+            margin-top: 30px;
+        }
+
+        .answer-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .answer-input {
+            width: 100%;
+            min-height: 180px;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            font-size: 1.05rem;
+            font-family: 'Cairo', sans-serif;
+            resize: vertical;
+            transition: all 0.3s;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.7);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+        }
+
+        .answer-input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.5);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .previous-questions {
+            margin-top: 40px;
+        }
+
+        .previous-questions h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .prev-qa {
+            background: rgba(96, 165, 250, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-right: 3px solid rgba(96, 165, 250, 0.4);
+        }
+
+        .prev-question {
+            color: var(--primary-light);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .prev-answer {
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .prev-score {
+            display: inline-block;
+            background: rgba(96, 165, 250, 0.2);
+            color: var(--primary-light);
+            padding: 5px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .spinner {
+            width: 70px;
+            height: 70px;
+            border: 6px solid rgba(96, 165, 250, 0.2);
+            border-top: 6px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: var(--primary-light);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .completion-screen {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            animation: slideIn 0.6s;
+        }
+
+        .completion-icon {
+            font-size: 5rem;
+            margin-bottom: 25px;
+        }
+
+        .completion-screen h2 {
+            color: var(--success);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .final-score-display {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            font-size: 4rem;
+            font-weight: bold;
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .completion-message {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .btn-return {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 15px 40px;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-return:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .error-banner {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            color: #fca5a5;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .interview-header {
+                padding: 25px;
+            }
+
+            .interview-header h2 {
+                font-size: 1.6rem;
+            }
+
+            .question-card {
+                padding: 25px;
+            }
+
+            .question-text {
+                font-size: 1.1rem;
+            }
+
+            .final-score-display {
+                font-size: 3rem;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="interview-container" id="interviewContainer"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLn9QQAByyGzI3lD5FBCNGurzbv_kvR7w",
+            authDomain: "smart-interview-system-dd643.firebaseapp.com",
+            projectId: "smart-interview-system-dd643",
+            storageBucket: "smart-interview-system-dd643.firebasestorage.app",
+            messagingSenderId: "992351376418",
+            appId: "1:992351376418:web:0aa361087e8d33a686667b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const GEMINI_API_KEY = "AIzaSyAuFpn842uhuQoxRx1rvpEw6O_YK_sU9K8";
+        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const MAX_QUESTIONS = 10;
+
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        const currentInterviewData = JSON.parse(localStorage.getItem('currentInterview') || 'null');
+
+        if (!currentUser || !currentInterviewData) {
+            window.location.href = 'applicant-dashboard_firestore.html';
+        }
+
+        let interview, job, currentAnswer = '', isProcessing = false;
+
+        async function callGemini(prompt) {
+            const response = await fetch(GEMINI_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { temperature: 0.7, maxOutputTokens: 2048 }
+                })
+            });
+
+            if (!response.ok) throw new Error('Gemini API Error');
+            
+            const data = await response.json();
+            return data.candidates[0].content.parts[0].text;
+        }
+
+        async function loadInterviewData() {
+            try {
+                const interviewDoc = await getDoc(doc(db, "interviews", currentInterviewData.interviewId));
+                const jobDoc = await getDoc(doc(db, "jobs", currentInterviewData.jobId));
+                
+                if (!interviewDoc.exists() || !jobDoc.exists()) throw new Error('البيانات غير موجودة');
+                
+                interview = { id: interviewDoc.id, ...interviewDoc.data() };
+                job = { id: jobDoc.id, ...jobDoc.data() };
+
+                if (!interview.currentQuestion && interview.questions.length === 0) {
+                    await generateNextQuestion();
+                } else {
+                    renderInterface();
+                }
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        function renderInterface() {
+            if (interview.status === 'completed') {
+                showCompletionScreen();
+                return;
+            }
+
+            const progress = (interview.questions.length / MAX_QUESTIONS) * 100;
+
+            document.getElementById('interviewContainer').innerHTML = `
+                <div class="interview-header">
+                    <h2>المقابلة</h2>
+                    <div class="job-title">${job.title}</div>
+                    <div class="progress-info">
+                        <span class="question-counter">السؤال ${interview.questions.length + 1} من ${MAX_QUESTIONS}</span>
+                        <span>${Math.round(progress)}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                </div>
+
+                ${isProcessing ? `
+                    <div class="question-card">
+                        <div class="loading-state">
+                            <div class="spinner"></div>
+                            <div class="loading-text">جارٍ المعالجة...</div>
+                        </div>
+                    </div>
+                ` : `
+                    <div class="question-card">
+                        <div class="question-label">السؤال ${interview.questions.length + 1}</div>
+                        <div class="question-text">${interview.currentQuestion}</div>
+                        <div class="answer-section">
+                            <div class="answer-label">إجابتك:</div>
+                            <textarea class="answer-input" id="answerInput" placeholder="اكتب إجابتك...">${currentAnswer}</textarea>
+                            <button class="btn-submit" id="submitBtn" ${!currentAnswer.trim() ? 'disabled' : ''}>إرسال</button>
+                        </div>
+
+                        ${interview.questions.length > 0 ? `
+                            <div class="previous-questions">
+                                <h3>الأسئلة السابقة (${interview.questions.length})</h3>
+                                ${interview.questions.map((qa, i) => `
+                                    <div class="prev-qa">
+                                        <div class="prev-question">س${i + 1}: ${qa.question}</div>
+                                        <div class="prev-answer"><strong>إجابتك:</strong> ${qa.answer.substring(0, 100)}...</div>
+                                        <div style="margin-top: 10px;">
+                                            <span class="prev-score">${qa.score}/10</span>
+                                            <span style="color: var(--text-muted); margin-right: 15px;">${qa.feedback}</span>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `}
+            `;
+
+            const input = document.getElementById('answerInput');
+            const btn = document.getElementById('submitBtn');
+            
+            if (input && btn) {
+                input.addEventListener('input', (e) => {
+                    currentAnswer = e.target.value;
+                    btn.disabled = !currentAnswer.trim();
+                });
+                btn.addEventListener('click', submitAnswer);
+                input.focus();
+            }
+        }
+
+        async function generateNextQuestion() {
+            isProcessing = true;
+            renderInterface();
+
+            try {
+                const prompt = `اطرح سؤالاً فنياً للوظيفة: ${job.title}
+المهارات: ${job.skills}
+${interview.questions.length > 0 ? `الأسئلة السابقة:\n${interview.questions.map((q, i) => `${i + 1}. ${q.question}`).join('\n')}` : ''}
+
+JSON فقط:
+{"question": "السؤال"}`;
+
+                const response = await callGemini(prompt);
+                const data = JSON.parse(response.match(/\{[\s\S]*?\}/)[0]);
+                
+                interview.currentQuestion = data.question.trim();
+                await updateDoc(doc(db, "interviews", interview.id), {
+                    currentQuestion: interview.currentQuestion
+                });
+                
+                isProcessing = false;
+                renderInterface();
+            } catch (error) {
+                isProcessing = false;
+                showError('فشل توليد السؤال');
+            }
+        }
+
+        async function submitAnswer() {
+            if (!currentAnswer.trim() || isProcessing) return;
+
+            isProcessing = true;
+            renderInterface();
+
+            try {
+                const prompt = `قيّم من 0-10:
+السؤال: ${interview.currentQuestion}
+الإجابة: ${currentAnswer}
+
+JSON:
+{"score": رقم, "feedback": "تعليق"}`;
+
+                const response = await callGemini(prompt);
+                const data = JSON.parse(response.match(/\{[\s\S]*?\}/)[0]);
+                
+                interview.questions.push({
+                    question: interview.currentQuestion,
+                    answer: currentAnswer,
+                    score: Math.round(data.score),
+                    feedback: data.feedback
+                });
+
+                const total = interview.questions.reduce((sum, q) => sum + q.score, 0);
+                interview.finalScore = Math.round((total / (interview.questions.length * 10)) * 100);
+
+                if (interview.questions.length >= MAX_QUESTIONS) {
+                    await updateDoc(doc(db, "interviews", interview.id), {
+                        questions: interview.questions,
+                        status: 'completed',
+                        finalScore: interview.finalScore,
+                        currentQuestion: null
+                    });
+                    interview.status = 'completed';
+                    isProcessing = false;
+                    showCompletionScreen();
+                    return;
+                }
+
+                await updateDoc(doc(db, "interviews", interview.id), {
+                    questions: interview.questions,
+                    finalScore: interview.finalScore,
+                    currentQuestion: null
+                });
+
+                interview.currentQuestion = null;
+                currentAnswer = '';
+                isProcessing = false;
+                setTimeout(generateNextQuestion, 1000);
+            } catch (error) {
+                isProcessing = false;
+                showError('فشل التقييم');
+            }
+        }
+
+        function showCompletionScreen() {
+            document.getElementById('interviewContainer').innerHTML = `
+                <div class="completion-screen">
+                    <div class="completion-icon">🎉</div>
+                    <h2>انتهت المقابلة!</h2>
+                    <div class="final-score-display">${interview.finalScore}%</div>
+                    <div class="completion-message">
+                        <p>تم تقييم ${interview.questions.length} أسئلة</p>
+                        <p style="color: var(--success); margin-top: 15px;">سيتم مراجعة طلبك قريباً</p>
+                    </div>
+                    <button class="btn-return" onclick="window.location.href='applicant-dashboard_firestore.html'">العودة</button>
+                </div>
+            `;
+            localStorage.removeItem('currentInterview');
+        }
+
+        function showError(message) {
+            document.getElementById('interviewContainer').innerHTML = `
+                <div class="error-banner">
+                    <strong>⚠️ خطأ</strong>
+                    <p>${message}</p>
+                    <button class="btn-return" onclick="window.location.href='applicant-dashboard_firestore.html'" style="margin-top:20px">العودة</button>
+                </div>
+            `;
+        }
+
+        loadInterviewData();
+    </script>
+</body>
+</html>
