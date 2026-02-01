@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المتقدم - نظام المقابلات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-darker: #2563eb;
+            --primary-light: #93c5fd;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-light: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(96, 165, 250, 0.2);
+            --success: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+            direction: rtl;
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(59, 130, 246, 0.15));
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            text-align: center;
+            backdrop-filter: blur(20px);
+        }
+
+        .welcome-banner h1 {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .welcome-banner p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .section-header h2 {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+        }
+
+        .job-count {
+            background: var(--primary);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 30px;
+        }
+
+        .job-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 35px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .job-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            transform: scaleX(0);
+            transition: transform 0.4s;
+            transform-origin: right;
+        }
+
+        .job-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .job-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(96, 165, 250, 0.2);
+            border-color: var(--primary);
+        }
+
+        .job-card h3 {
+            color: var(--primary-light);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .job-card p {
+            color: var(--text-muted);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1rem;
+        }
+
+        .skills-section {
+            margin: 25px 0;
+        }
+
+        .skills-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .skill-tag {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--primary-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            transition: all 0.3s;
+        }
+
+        .skill-tag:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .job-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+        }
+
+        .job-date {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-apply:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-apply:disabled {
+            background: rgba(148, 163, 184, 0.3);
+            color: var(--text-muted);
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .applied-badge {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            padding: 10px 20px;
+            border-radius: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .empty-state {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            padding: 100px 30px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .empty-state-icon {
+            font-size: 6rem;
+            margin-bottom: 25px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(96, 165, 250, 0.2);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner h1 {
+                font-size: 1.8rem;
+            }
+
+            .welcome-banner p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <span>نظام المقابلات الذكية</span>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role">متقدم</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="welcome-banner">
+            <h1>مرحباً، <span id="welcomeName"></span>!</h1>
+            <p>استكشف الوظائف المتاحة وابدأ رحلتك المهنية معنا</p>
+        </div>
+
+        <div class="section-header">
+            <h2>الوظائف المتاحة</h2>
+            <span class="job-count"><span id="jobCount">0</span> وظيفة</span>
+        </div>
+
+        <div id="jobsContainer"></div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <h3 style="color: var(--primary-light); margin-bottom: 10px;">جارٍ بدء المقابلة...</h3>
+            <p style="color: var(--text-muted);">يرجى الانتظار قليلاً</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc,
+            setDoc,
+            addDoc,
+            getDocs, 
+            query, 
+            where,
+            orderBy,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLn9QQAByyGzI3lD5FBCNGurzbv_kvR7w",
+            authDomain: "smart-interview-system-dd643.firebaseapp.com",
+            projectId: "smart-interview-system-dd643",
+            storageBucket: "smart-interview-system-dd643.firebasestorage.app",
+            messagingSenderId: "992351376418",
+            appId: "1:992351376418:web:0aa361087e8d33a686667b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // التحقق من المستخدم
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || currentUser.isAdmin) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userName').textContent = currentUser.name;
+        document.getElementById('welcomeName').textContent = currentUser.name.split(' ')[0];
+
+        let jobs = [];
+        let userInterviews = [];
+        let unsubscribeJobs = null;
+        let unsubscribeInterviews = null;
+
+        // ✅ إعداد Real-time Listeners
+        function setupRealtimeListeners() {
+            console.log('🔄 إعداد Real-time Listeners...');
+
+            // Listener للوظائف
+            const jobsQuery = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
+            unsubscribeJobs = onSnapshot(jobsQuery, (snapshot) => {
+                console.log('📥 تحديث الوظائف:', snapshot.size, 'وظيفة');
+                jobs = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                }));
+                loadJobs();
+            }, (error) => {
+                console.error('❌ خطأ في listener الوظائف:', error);
+            });
+
+            // Listener للمقابلات الخاصة بالمستخدم
+            const interviewsQuery = query(
+                collection(db, "interviews"), 
+                where("applicantEmail", "==", currentUser.email),
+                orderBy("createdAt", "desc")
+            );
+            unsubscribeInterviews = onSnapshot(interviewsQuery, (snapshot) => {
+                console.log('📥 تحديث مقابلات المستخدم:', snapshot.size, 'مقابلة');
+                userInterviews = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                }));
+                loadJobs(); // إعادة رسم الوظائف لتحديث حالة التقديم
+            }, (error) => {
+                console.error('❌ خطأ في listener المقابلات:', error);
+            });
+        }
+
+        function loadJobs() {
+            const container = document.getElementById('jobsContainer');
+            document.getElementById('jobCount').textContent = jobs.length;
+
+            console.log('🎨 رسم', jobs.length, 'وظيفة');
+
+            if (jobs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">💼</div>
+                        <h3>لا توجد وظائف متاحة حالياً</h3>
+                        <p>تحقق مرة أخرى لاحقاً للحصول على فرص جديدة</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="jobs-grid">
+                    ${jobs.map(job => {
+                        const hasApplied = userInterviews.find(i => i.jobId === job.id);
+                        const createdDate = job.createdAt ? new Date(job.createdAt).toLocaleDateString('ar-SA') : 'غير محدد';
+                        
+                        return `
+                            <div class="job-card">
+                                <h3>${job.title || 'بدون عنوان'}</h3>
+                                <p>${job.description || 'بدون وصف'}</p>
+                                
+                                <div class="skills-section">
+                                    <div class="skills-label">المهارات المطلوبة:</div>
+                                    <div class="skills-tags">
+                                        ${(job.skills || '').split(',').filter(s => s.trim()).map(skill => 
+                                            `<span class="skill-tag">${skill.trim()}</span>`
+                                        ).join('')}
+                                    </div>
+                                </div>
+                                
+                                <div class="job-footer">
+                                    <div class="job-date">
+                                        ${createdDate}
+                                    </div>
+                                    ${hasApplied ? `
+                                        <div class="applied-badge">
+                                            <span>تم التقديم ✓</span>
+                                            ${hasApplied.status === 'completed' ? 
+                                                `<span class="score-display">${hasApplied.finalScore || 0}%</span>` 
+                                                : ''
+                                            }
+                                        </div>
+                                    ` : `
+                                        <button class="btn-apply" onclick="applyForJob('${job.id}')">
+                                            التقديم الآن
+                                        </button>
+                                    `}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+        }
+
+        window.applyForJob = async function(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            
+            if (!job) {
+                alert('الوظيفة غير موجودة!');
+                return;
+            }
+
+            if (userInterviews.find(i => i.jobId === jobId)) {
+                alert('لقد تقدمت لهذه الوظيفة من قبل!');
+                return;
+            }
+
+            document.getElementById('loadingOverlay').classList.add('show');
+
+            try {
+                console.log('💾 إنشاء مقابلة جديدة للوظيفة:', job.title);
+
+                const newInterview = {
+                    jobId: jobId,
+                    jobTitle: job.title,
+                    applicantName: currentUser.name,
+                    applicantEmail: currentUser.email,
+                    questions: [],
+                    currentQuestion: null,
+                    currentQuestionIndex: 0,
+                    status: 'in-progress',
+                    finalScore: 0,
+                    createdAt: new Date().toISOString()
+                };
+
+                // ✅ استخدام addDoc بدلاً من setDoc
+                const docRef = await addDoc(collection(db, "interviews"), newInterview);
+
+                console.log('✅ تم إنشاء المقابلة بنجاح! ID:', docRef.id);
+
+                localStorage.setItem('currentInterview', JSON.stringify({
+                    interviewId: docRef.id,
+                    jobId: jobId
+                }));
+
+                setTimeout(() => {
+                    window.location.href = 'interview.html';
+                }, 1500);
+            } catch (error) {
+                console.error('❌ خطأ في إنشاء المقابلة:', error);
+                alert('حدث خطأ في بدء المقابلة: ' + error.message);
+                document.getElementById('loadingOverlay').classList.remove('show');
+            }
+        };
+
+        window.logout = function() {
+            // إيقاف الاستماع قبل تسجيل الخروج
+            if (unsubscribeJobs) unsubscribeJobs();
+            if (unsubscribeInterviews) unsubscribeInterviews();
+            
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        };
+
+        // ✅ بدء Real-time Listeners
+        setupRealtimeListeners();
+        
+        console.log('✅ تم تهيئة لوحة المتقدم بنجاح');
+    </script>
+</body>
+</html>

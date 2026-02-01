@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المدير - نظام المقابلات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-darker: #2563eb;
+            --primary-light: #93c5fd;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-light: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(96, 165, 250, 0.2);
+            --success: #22c55e;
+            --warning: #f59e0b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+            direction: rtl;
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: left;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .user-role {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .btn-logout {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: 2px solid white;
+            padding: 10px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .dashboard-header {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-header h1 {
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 2rem;
+        }
+
+        .dashboard-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 10px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 25px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(96, 165, 250, 0.4);
+        }
+
+        .jobs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .job-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .job-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(96, 165, 250, 0.2);
+            border-color: var(--primary);
+        }
+
+        .job-card h3 {
+            color: var(--primary-light);
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .job-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+
+        .skills-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .skill-tag {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--primary-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .job-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 80px 30px;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .interviews-table {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        th {
+            padding: 20px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 20px;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+            color: var(--text-secondary);
+        }
+
+        tr:hover {
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+        }
+
+        .status-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .score-cell {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-light);
+        }
+
+        .btn-view {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border-color);
+            border-radius: 25px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 40px;
+            position: relative;
+            animation: slideUp 0.4s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(96, 165, 250, 0.2);
+        }
+
+        .modal-header h3 {
+            color: var(--primary-light);
+            font-size: 1.8rem;
+        }
+
+        .btn-close {
+            background: rgba(96, 165, 250, 0.1);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .btn-close:hover {
+            background: rgba(96, 165, 250, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            transition: all 0.3s;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.7);
+            box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .interview-details {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .interview-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .meta-item {
+            background: rgba(96, 165, 250, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(96, 165, 250, 0.1);
+        }
+
+        .meta-label {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .qa-section {
+            margin-top: 30px;
+        }
+
+        .qa-section h4 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .qa-item {
+            background: rgba(96, 165, 250, 0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-right: 4px solid var(--primary);
+        }
+
+        .qa-question {
+            color: var(--primary-light);
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .qa-answer {
+            background: rgba(15, 23, 42, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        .qa-feedback {
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            margin-top: 15px;
+        }
+
+        .qa-score {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .qa-comment {
+            color: var(--text-muted);
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .jobs-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 12px 8px;
+            }
+
+            .modal {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-brand">
+                <span>نظام المقابلات الذكية</span>
+            </div>
+            <div class="user-section">
+                <div class="user-info">
+                    <div class="user-name" id="userName"></div>
+                    <div class="user-role">مدير النظام</div>
+                </div>
+                <button class="btn-logout" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard-header">
+            <h1>لوحة تحكم المدير</h1>
+            <p>إدارة الوظائف ومتابعة المقابلات والنتائج</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('jobs')">
+                <span>الوظائف (<span id="jobsCount">0</span>)</span>
+            </button>
+            <button class="tab" onclick="switchTab('interviews')">
+                <span>المقابلات (<span id="interviewsCount">0</span>)</span>
+            </button>
+        </div>
+
+        <div id="jobsTab" class="tab-content active">
+            <button class="btn-primary" onclick="openCreateJobModal()" style="margin-bottom: 30px;">
+                إنشاء وظيفة جديدة
+            </button>
+            <div id="jobsContainer"></div>
+        </div>
+
+        <div id="interviewsTab" class="tab-content">
+            <div id="interviewsContainer"></div>
+        </div>
+    </div>
+
+    <div id="createJobModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>إنشاء وظيفة جديدة</h3>
+                <button class="btn-close" onclick="closeCreateJobModal()">×</button>
+            </div>
+            <form id="createJobForm" onsubmit="createJob(event)">
+                <div class="form-group">
+                    <label>اسم الوظيفة</label>
+                    <input type="text" id="jobTitle" required placeholder="مثال: مطور Full Stack">
+                </div>
+                <div class="form-group">
+                    <label>وصف الوظيفة</label>
+                    <textarea id="jobDescription" required placeholder="اكتب وصفاً شاملاً للوظيفة..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>المهارات المطلوبة (افصل بينها بفواصل)</label>
+                    <input type="text" id="jobSkills" required placeholder="مثال: React, Node.js, MongoDB, RESTful APIs">
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">إنشاء الوظيفة</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="interviewDetailsModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>تفاصيل المقابلة</h3>
+                <button class="btn-close" onclick="closeInterviewDetailsModal()">×</button>
+            </div>
+            <div id="interviewDetailsContent"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc,
+            setDoc,
+            getDocs,
+            addDoc,
+            query, 
+            orderBy,
+            onSnapshot,
+            serverTimestamp
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLn9QQAByyGzI3lD5FBCNGurzbv_kvR7w",
+            authDomain: "smart-interview-system-dd643.firebaseapp.com",
+            projectId: "smart-interview-system-dd643",
+            storageBucket: "smart-interview-system-dd643.firebasestorage.app",
+            messagingSenderId: "992351376418",
+            appId: "1:992351376418:web:0aa361087e8d33a686667b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // التحقق من المستخدم
+        const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+        if (!currentUser || !currentUser.isAdmin) {
+            window.location.href = 'login.html';
+        }
+
+        document.getElementById('userName').textContent = currentUser.name || 'المدير';
+
+        let jobs = [];
+        let interviews = [];
+        let unsubscribeJobs = null;
+        let unsubscribeInterviews = null;
+
+        // ✅ إعداد Real-time Listeners بشكل صحيح
+        function setupRealtimeListeners() {
+            console.log('🔄 إعداد Real-time Listeners...');
+
+            // Listener للوظائف
+            const jobsQuery = query(collection(db, "jobs"), orderBy("createdAt", "desc"));
+            unsubscribeJobs = onSnapshot(jobsQuery, (snapshot) => {
+                console.log('📥 تحديث الوظائف:', snapshot.size, 'وظيفة');
+                jobs = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                }));
+                window.loadJobs();
+            }, (error) => {
+                console.error('❌ خطأ في listener الوظائف:', error);
+            });
+
+            // Listener للمقابلات
+            const interviewsQuery = query(collection(db, "interviews"), orderBy("createdAt", "desc"));
+            unsubscribeInterviews = onSnapshot(interviewsQuery, (snapshot) => {
+                console.log('📥 تحديث المقابلات:', snapshot.size, 'مقابلة');
+                interviews = snapshot.docs.map(doc => ({ 
+                    id: doc.id, 
+                    ...doc.data() 
+                }));
+                window.loadInterviews();
+            }, (error) => {
+                console.error('❌ خطأ في listener المقابلات:', error);
+            });
+        }
+
+        window.switchTab = function(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            if (tab === 'jobs') {
+                document.querySelector('.tab:first-child').classList.add('active');
+                document.getElementById('jobsTab').classList.add('active');
+            } else {
+                document.querySelector('.tab:last-child').classList.add('active');
+                document.getElementById('interviewsTab').classList.add('active');
+            }
+        };
+
+        window.loadJobs = function() {
+            const container = document.getElementById('jobsContainer');
+            document.getElementById('jobsCount').textContent = jobs.length;
+
+            console.log('🎨 رسم', jobs.length, 'وظيفة');
+
+            if (jobs.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <h3>لا توجد وظائف بعد</h3>
+                        <p>ابدأ بإنشاء وظيفة جديدة لاستقبال المتقدمين</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="jobs-grid">
+                    ${jobs.map(job => {
+                        const applicantsCount = interviews.filter(i => i.jobId === job.id).length;
+                        const createdDate = job.createdAt ? new Date(job.createdAt).toLocaleDateString('ar-SA') : 'غير محدد';
+                        
+                        return `
+                        <div class="job-card">
+                            <h3>${job.title || 'بدون عنوان'}</h3>
+                            <p>${job.description || 'بدون وصف'}</p>
+                            <div class="skills-tags">
+                                ${(job.skills || '').split(',').filter(s => s.trim()).map(skill => 
+                                    `<span class="skill-tag">${skill.trim()}</span>`
+                                ).join('')}
+                            </div>
+                            <div class="job-meta">
+                                <span>${createdDate}</span>
+                                <span>${applicantsCount} متقدم</span>
+                            </div>
+                        </div>
+                    `}).join('')}
+                </div>
+            `;
+        };
+
+        window.loadInterviews = function() {
+            const container = document.getElementById('interviewsContainer');
+            document.getElementById('interviewsCount').textContent = interviews.length;
+
+            console.log('🎨 رسم', interviews.length, 'مقابلة');
+
+            if (interviews.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📊</div>
+                        <h3>لا توجد مقابلات بعد</h3>
+                        <p>عندما يتقدم المرشحون، ستظهر مقابلاتهم هنا</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="interviews-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>اسم المتقدم</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الوظيفة</th>
+                                <th>الحالة</th>
+                                <th>النتيجة</th>
+                                <th>التفاصيل</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${interviews.map(interview => `
+                                <tr>
+                                    <td>${interview.applicantName || 'غير محدد'}</td>
+                                    <td>${interview.applicantEmail || 'غير محدد'}</td>
+                                    <td>${interview.jobTitle || 'غير محدد'}</td>
+                                    <td>
+                                        <span class="status-badge ${interview.status === 'completed' ? 'status-completed' : 'status-progress'}">
+                                            ${interview.status === 'completed' ? 'منتهية' : 'قيد التقدم'}
+                                        </span>
+                                    </td>
+                                    <td class="score-cell">
+                                        ${interview.status === 'completed' ? (interview.finalScore || 0) + '%' : '-'}
+                                    </td>
+                                    <td>
+                                        <button class="btn-view" onclick='viewInterview(${JSON.stringify(interview).replace(/'/g, "&apos;")})'>
+                                            عرض
+                                        </button>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        };
+
+        window.openCreateJobModal = function() {
+            document.getElementById('createJobModal').classList.add('show');
+        };
+
+        window.closeCreateJobModal = function() {
+            document.getElementById('createJobModal').classList.remove('show');
+            document.getElementById('createJobForm').reset();
+        };
+
+        window.createJob = async function(e) {
+            e.preventDefault();
+            
+            const jobTitle = document.getElementById('jobTitle').value.trim();
+            const jobDescription = document.getElementById('jobDescription').value.trim();
+            const jobSkills = document.getElementById('jobSkills').value.trim();
+
+            if (!jobTitle || !jobDescription || !jobSkills) {
+                alert('الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            const newJob = {
+                title: jobTitle,
+                description: jobDescription,
+                skills: jobSkills,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                console.log('💾 إنشاء وظيفة جديدة:', newJob);
+                
+                // ✅ استخدام addDoc بدلاً من setDoc مع ID يدوي
+                const docRef = await addDoc(collection(db, "jobs"), newJob);
+                
+                console.log('✅ تم إنشاء الوظيفة بنجاح! ID:', docRef.id);
+                alert('تم إنشاء الوظيفة بنجاح!');
+                window.closeCreateJobModal();
+            } catch (error) {
+                console.error('❌ خطأ في إنشاء الوظيفة:', error);
+                alert('حدث خطأ في إنشاء الوظيفة: ' + error.message);
+            }
+        };
+
+        window.viewInterview = function(interview) {
+            const content = document.getElementById('interviewDetailsContent');
+            
+            content.innerHTML = `
+                <div class="interview-details">
+                    <div class="interview-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">المتقدم</div>
+                            <div class="meta-value">${interview.applicantName || 'غير محدد'}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">الوظيفة</div>
+                            <div class="meta-value">${interview.jobTitle || 'غير محدد'}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">النتيجة النهائية</div>
+                            <div class="meta-value" style="color: var(--primary-light); font-size: 1.5rem;">
+                                ${interview.status === 'completed' ? (interview.finalScore || 0) + '%' : 'قيد التقدم'}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${interview.questions && interview.questions.length > 0 ? `
+                        <div class="qa-section">
+                            <h4>الأسئلة والإجابات (${interview.questions.length})</h4>
+                            ${interview.questions.map((qa, index) => `
+                                <div class="qa-item">
+                                    <div class="qa-question">
+                                        السؤال ${index + 1}: ${qa.question || 'غير محدد'}
+                                    </div>
+                                    <div class="qa-answer">
+                                        <strong>الإجابة:</strong><br>
+                                        ${qa.answer || 'لا توجد إجابة'}
+                                    </div>
+                                    <div class="qa-feedback">
+                                        <div class="qa-score">${qa.score || 0}/10</div>
+                                        <div class="qa-comment">${qa.feedback || 'لا يوجد تعليق'}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : '<p style="text-align: center; color: var(--text-muted);">لم يتم طرح أسئلة بعد</p>'}
+                </div>
+            `;
+
+            document.getElementById('interviewDetailsModal').classList.add('show');
+        };
+
+        window.closeInterviewDetailsModal = function() {
+            document.getElementById('interviewDetailsModal').classList.remove('show');
+        };
+
+        window.logout = function() {
+            // إيقاف الاستماع قبل تسجيل الخروج
+            if (unsubscribeJobs) unsubscribeJobs();
+            if (unsubscribeInterviews) unsubscribeInterviews();
+            
+            localStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        };
+
+        // إغلاق النوافذ عند النقر خارجها
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('show');
+                }
+            });
+        });
+
+        // ✅ بدء Real-time Listeners
+        setupRealtimeListeners();
+        
+        console.log('✅ تم تهيئة لوحة المدير بنجاح');
+    </script>
+</body>
+</html>

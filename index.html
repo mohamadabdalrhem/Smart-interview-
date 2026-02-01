@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المقابلات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-darker: #2563eb;
+            --primary-light: #93c5fd;
+            --primary-lighter: #dbeafe;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(96, 165, 250, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+            overflow-x: hidden;
+            position: relative;
+            color: var(--text-primary);
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(96, 165, 250, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 60px 40px;
+            text-align: center;
+            animation: fadeIn 1s ease-in;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .cta-top {
+            margin: 0 0 70px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #ffffff;
+            border: none;
+            padding: 16px 48px;
+            border-radius: 12px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-darker) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(96, 165, 250, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            margin-bottom: 40px;
+            color: var(--text-secondary);
+            font-weight: 300;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 70px 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px 40px;
+            background: rgba(96, 165, 250, 0.05);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            min-width: 160px;
+        }
+
+        .stat-item:hover {
+            background: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(96, 165, 250, 0.2);
+        }
+
+        .stat-icon {
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 70px 0;
+        }
+
+        .feature-card {
+            background: rgba(96, 165, 250, 0.03);
+            border-radius: 20px;
+            padding: 40px 32px;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            text-align: right;
+        }
+
+        .feature-card:hover {
+            background: rgba(96, 165, 250, 0.08);
+            border-color: rgba(96, 165, 250, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(96, 165, 250, 0.15);
+        }
+
+        .feature-icon {
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: var(--primary);
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        footer {
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1.1rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .btn {
+                display: block;
+                margin: 12px auto;
+                max-width: 280px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>نظام المقابلات الذكية</h1>
+        
+        <p class="subtitle">
+            منصة توظيف احترافية تعتمد على الذكاء الاصطناعي<br>
+            للحصول على أفضل المواهب بكفاءة وموضوعية
+        </p>
+
+        <div class="cta-top">
+            <a href="register.html" class="btn">انضم إلينا</a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+                        <polyline points="17 6 23 6 23 12"/>
+                    </svg>
+                </span>
+                <div class="stat-label">كفاءة عالية</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                        <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+                    </svg>
+                </span>
+                <div class="stat-label">ذكاء متقدم</div>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="7"/>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                    </svg>
+                </span>
+                <div class="stat-label">جودة مميزة</div>
+            </div>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <span class="feature-icon">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="6"/>
+                        <circle cx="12" cy="12" r="2"/>
+                    </svg>
+                </span>
+                <h3>أسئلة ذكية ومخصصة</h3>
+                <p>يقوم النظام بتوليد أسئلة تتناسب مع المهارات المطلوبة لكل وظيفة بدقة احترافية</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                    </svg>
+                </span>
+                <h3>تقييم فوري شامل</h3>
+                <p>احصل على تقييم مفصل لإجاباتك مع ملاحظات بناءة تساعدك على التطور</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="20" x2="12" y2="10"/>
+                        <line x1="18" y1="20" x2="18" y2="4"/>
+                        <line x1="6" y1="20" x2="6" y2="16"/>
+                    </svg>
+                </span>
+                <h3>نتائج موثوقة وواضحة</h3>
+                <p>نظام تقييم شفاف يعرض نتيجتك النهائية بموضوعية تامة</p>
+            </div>
+            
+            <div class="feature-card">
+                <span class="feature-icon">
+                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </span>
+                <h3>أمان وخصوصية كاملة</h3>
+                <p>بياناتك محمية بأعلى معايير الأمان مع ضمان الخصوصية التامة</p>
+            </div>
+        </div>
+
+        <footer>
+            © 2025 نظام المقابلات الذكية - جميع الحقوق محفوظة
+        </footer>
+    </div>
+</body>
+</html>

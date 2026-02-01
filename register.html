@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - نظام المقابلات الذكية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #60a5fa;
+            --primary-dark: #3b82f6;
+            --primary-darker: #2563eb;
+            --primary-light: #93c5fd;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(96, 165, 250, 0.2);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+        }
+
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(to bottom, var(--bg-dark), var(--bg-darker));
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+            padding: 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(96, 165, 250, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.06) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .register-container {
+            background: rgba(15, 20, 40, 0.85);
+            backdrop-filter: blur(30px);
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-color);
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(40px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .register-container h2 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+        }
+
+        .form-group input.valid {
+            border-color: var(--success);
+        }
+
+        .form-group input.invalid {
+            border-color: var(--error);
+        }
+
+        .password-strength {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .password-strength.show {
+            display: block;
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 6px;
+            overflow: hidden;
+        }
+
+        .strength-bar-fill {
+            height: 100%;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+
+        .strength-weak { 
+            width: 33%; 
+            background: var(--error);
+        }
+        
+        .strength-medium { 
+            width: 66%; 
+            background: var(--warning);
+        }
+        
+        .strength-strong { 
+            width: 100%; 
+            background: var(--success);
+        }
+
+        .error-message, .success-message {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: none;
+            backdrop-filter: blur(10px);
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.15);
+            color: #fca5a5;
+            border-right: 3px solid #ef4444;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+            border-right: 3px solid #22c55e;
+        }
+
+        .error-message.show, .success-message.show {
+            display: block;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .terms-agreement {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 24px;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+        }
+
+        .terms-agreement input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .terms-agreement a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .terms-agreement a:hover {
+            color: var(--primary-light);
+        }
+
+        .btn-register {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: #ffffff;
+            border: none;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px rgba(96, 165, 250, 0.3);
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .btn-register:hover:not(:disabled) {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-darker) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(96, 165, 250, 0.4);
+        }
+
+        .btn-register:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+        }
+
+        .divider::before { margin-left: 15px; }
+        .divider::after { margin-right: 15px; }
+
+        .login-link {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .login-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .login-link a:hover {
+            color: var(--primary-light);
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-home a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.88rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .back-home a:hover {
+            color: var(--primary);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 0.8s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 40px 28px;
+            }
+
+            .register-container h2 {
+                font-size: 1.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="header-section">
+            <h2>إنشاء حساب جديد</h2>
+            <p class="subtitle">انضم إلينا وابدأ رحلتك المهنية اليوم</p>
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="fullName">الاسم الكامل</label>
+                <input type="text" id="fullName" placeholder="أدخل اسمك الكامل" required minlength="3" autocomplete="name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">البريد الإلكتروني</label>
+                <input type="email" id="email" placeholder="example@domain.com" required autocomplete="email">
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <input type="password" id="password" placeholder="أدخل كلمة المرور" required minlength="6" autocomplete="new-password">
+                <div class="password-strength" id="passwordStrength">
+                    <div class="strength-bar">
+                        <div class="strength-bar-fill" id="strengthBar"></div>
+                    </div>
+                    <span id="strengthText"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">تأكيد كلمة المرور</label>
+                <input type="password" id="confirmPassword" placeholder="أعد إدخال كلمة المرور" required autocomplete="new-password">
+            </div>
+
+            <div class="terms-agreement">
+                <input type="checkbox" id="agreeTerms" required>
+                <label for="agreeTerms">
+                    أوافق على <a href="#">الشروط والأحكام</a> و <a href="#">سياسة الخصوصية</a>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-register" id="submitBtn">
+                إنشاء الحساب
+            </button>
+        </form>
+
+        <div class="divider">أو</div>
+
+        <div class="login-link">
+            لديك حساب بالفعل؟ <a href="login.html">سجل دخولك الآن</a>
+        </div>
+
+        <div class="back-home">
+            <a href="index.html">
+                <span>←</span>
+                العودة للصفحة الرئيسية
+            </a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getFirestore, 
+            collection, 
+            doc,
+            setDoc,
+            query, 
+            where, 
+            getDocs 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCLn9QQAByyGzI3lD5FBCNGurzbv_kvR7w",
+            authDomain: "smart-interview-system-dd643.firebaseapp.com",
+            projectId: "smart-interview-system-dd643",
+            storageBucket: "smart-interview-system-dd643.firebasestorage.app",
+            messagingSenderId: "992351376418",
+            appId: "1:992351376418:web:0aa361087e8d33a686667b"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        const ADMIN_EMAIL = "t_massaad@svuonline.org";
+        
+        const registerForm = document.getElementById('registerForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const submitBtn = document.getElementById('submitBtn');
+        const fullNameInput = document.getElementById('fullName');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        passwordInput.addEventListener('input', function() {
+            const password = this.value;
+            const strengthDiv = document.getElementById('passwordStrength');
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+
+            if (password.length === 0) {
+                strengthDiv.classList.remove('show');
+                return;
+            }
+
+            strengthDiv.classList.add('show');
+
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+
+            strengthBar.className = 'strength-bar-fill';
+            
+            if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+                strengthText.textContent = 'ضعيفة';
+                strengthText.style.color = '#fca5a5';
+            } else if (strength <= 3) {
+                strengthBar.classList.add('strength-medium');
+                strengthText.textContent = 'متوسطة';
+                strengthText.style.color = '#fbbf24';
+            } else {
+                strengthBar.classList.add('strength-strong');
+                strengthText.textContent = 'قوية';
+                strengthText.style.color = '#86efac';
+            }
+        });
+
+        confirmPasswordInput.addEventListener('input', function() {
+            if (this.value === '') {
+                this.classList.remove('valid', 'invalid');
+                return;
+            }
+
+            if (this.value === passwordInput.value) {
+                this.classList.remove('invalid');
+                this.classList.add('valid');
+            } else {
+                this.classList.remove('valid');
+                this.classList.add('invalid');
+            }
+        });
+
+        fullNameInput.addEventListener('blur', function() {
+            if (this.value.length < 3) {
+                this.classList.add('invalid');
+            } else {
+                this.classList.remove('invalid');
+                this.classList.add('valid');
+            }
+        });
+
+        emailInput.addEventListener('blur', function() {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(this.value)) {
+                this.classList.add('invalid');
+            } else {
+                this.classList.remove('invalid');
+                this.classList.add('valid');
+            }
+        });
+
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fullName = fullNameInput.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+
+            errorMessage.classList.remove('show');
+            successMessage.classList.remove('show');
+
+            if (fullName.length < 3) {
+                showError('الاسم يجب أن يكون 3 أحرف على الأقل');
+                return;
+            }
+
+            if (email === ADMIN_EMAIL) {
+                showError('هذا البريد الإلكتروني محجوز للنظام');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('كلمات المرور غير متطابقة');
+                return;
+            }
+
+            if (!agreeTerms) {
+                showError('يجب الموافقة على الشروط والأحكام');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="loading"></span> جارٍ إنشاء الحساب...';
+
+            try {
+                const q = query(collection(db, "users"), where("email", "==", email));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    showError('هذا البريد الإلكتروني مسجل بالفعل');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'إنشاء الحساب';
+                    return;
+                }
+
+                const userId = Date.now().toString();
+                const newUser = {
+                    name: fullName,
+                    email: email,
+                    password: password,
+                    createdAt: new Date().toISOString(),
+                    isAdmin: false
+                };
+
+                await setDoc(doc(db, "users", userId), newUser);
+
+                localStorage.setItem('currentUser', JSON.stringify({
+                    id: userId,
+                    ...newUser
+                }));
+
+                successMessage.textContent = 'تم إنشاء الحساب بنجاح! جارٍ التوجيه...';
+                successMessage.classList.add('show');
+
+                setTimeout(() => {
+                    window.location.href = 'applicant-dashboard.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('خطأ في التسجيل:', error);
+                showError('حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'إنشاء الحساب';
+            }
+        });
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.add('show');
+        }
+
+        [fullNameInput, emailInput, passwordInput, confirmPasswordInput].forEach(input => {
+            input.addEventListener('input', () => {
+                errorMessage.classList.remove('show');
+            });
+        });
+    </script>
+</body>
+</html>
